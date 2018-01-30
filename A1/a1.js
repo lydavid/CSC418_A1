@@ -313,20 +313,7 @@ function drawPenguin(ctx)
   // note that every time the slider is moved, this entire code section is executed
   // so hierarchical structure is just making sure they are relative to the right things
 
-  // Define transformation for eye as a rotation and translation
-  /*var eye_offset = [20, 20]; // location of eye relative to head
-  var iris_offset = [20, 20]; // location of iris relative to eye
-  var eye_T = composeTransforms(
-  	rotationAboutPoint(head_angle, eye_offset),
-  	translateByOffset(eye_offset)
-  	);
-  
-  eye = transformPoint(eye_offset, eye_T);
-  eye = transformPoint(eye, eye_T);
-  drawCircle(ctx, eye[0], eye[1], eye_r);*/
-
-
-  // Eye and Iris
+  // Eye
   var eye_offset = [-15, -10]; // location of eye relative to head
   var eye_T = composeTransforms(
   	rotationAboutPoint(head_angle, eye_offset),
@@ -338,7 +325,18 @@ function drawPenguin(ctx)
   eye = transformPoint(eye, torso_T);
   drawCircle(ctx, eye[0], eye[1], eye_r);
 
-  
+  // Iris
+  var iris_offset = [-15, -10];
+  var iris_T = composeTransforms(
+  	rotationAboutPoint(head_angle, iris_offset),
+  	translateByOffset(iris_offset)
+  );
+
+  iris = transformPoint(iris_offset, eye_T);
+  iris = transformPoint(iris, head_T);
+  iris = transformPoint(iris, torso_T);
+  drawCircle(ctx, iris[0], iris[1], iris_r);
+
 
   // Mouth
 
@@ -367,19 +365,100 @@ function drawPenguin(ctx)
 
   // Define transformation for the legs and feet
   var leg_offsets = [[-50, 200], [50, 200]]; // location of legs relative to body
-  var hip_joint_offset = [0, -40]; // location of hip joint relative to center of leg
+  var hip_joint_offset = [[0, -40], [10, -40]]; // location of hip joint relative to center of leg
 
   var foot_offset = [-40, 40]; // location of foot relative to leg
   var ankle_joint_offset = [40, 0]; // location o ankle joint relative to center of foot
-  //var leg_T;
 
-  for (var i = 0; i < leg_offsets.length; i++) {
+
+
+
+  // Legs
+  leg_T = composeTransforms(
+  	rotationAboutPoint(hip_angles[0], hip_joint_offset[0]),
+  	translateByOffset(leg_offsets[0])
+  );
+  //console.log(leg_T); // even though leg_T is different in each loop, leg_poly ends up both being the same...
+
+  // Transform leg in hierarchical fashion
+
+  leg_poly = transformPolygon(leg_poly, leg_T);
+  leg_poly = transformPolygon(leg_poly, torso_T);
+  drawPolygon(ctx, leg_poly);
+  console.log(leg_poly);
+  
+  // Draw hip joint
+  hip_joints[0] = transformPoint(hip_joint_offset[0], leg_T);
+  hip_joints[0] = transformPoint(hip_joints[0], torso_T);
+  drawCircle(ctx, hip_joints[0][0], hip_joints[0][1], hip_joint_r);
+
+
+  // Feets
+  var foot_T = composeTransforms(
+  	rotationAboutPoint(ankle_angles[0], ankle_joint_offset),
+  	translateByOffset(foot_offset)
+  );
+
+  // Transform leg in hierarchical fashion
+  foot_poly = transformPolygon(foot_poly, foot_T);
+  foot_poly = transformPolygon(foot_poly, leg_T);
+  foot_poly = transformPolygon(foot_poly, torso_T);
+  drawPolygon(ctx, foot_poly);
+  
+  // Draw hip joint
+  ankle_joints[0] = transformPoint(ankle_joint_offset, foot_T);
+  ankle_joints[0] = transformPoint(ankle_joints[0], leg_T);
+  ankle_joints[0] = transformPoint(ankle_joints[0], torso_T);
+  drawCircle(ctx, ankle_joints[0][0], ankle_joints[0][1], ankle_joint_r);
+
+
+  // Legs
+  hleg_T = composeTransforms(
+  	rotationAboutPoint(hip_angles[1], hip_joint_offset[1]),
+  	translateByOffset(leg_offsets[1])
+  );
+  //console.log(leg_T); // even though leg_T is different in each loop, leg_poly ends up both being the same...
+
+  // Transform leg in hierarchical fashion
+
+  leg_poly = transformPolygon(leg_poly, hleg_T);
+  leg_poly = transformPolygon(leg_poly, torso_T);
+  drawPolygon(ctx, leg_poly);
+  console.log(leg_poly);
+  
+  // Draw hip joint
+  hip_joints[1] = transformPoint(hip_joint_offset[1], hleg_T);
+  hip_joints[1] = transformPoint(hip_joints[1], torso_T);
+  drawCircle(ctx, hip_joints[1][0], hip_joints[1][1], hip_joint_r);
+
+
+  // Feets
+  var foot_T = composeTransforms(
+  	rotationAboutPoint(ankle_angles[1], ankle_joint_offset),
+  	translateByOffset(foot_offset)
+  );
+
+  // Transform leg in hierarchical fashion
+  foot_poly = transformPolygon(foot_poly, foot_T);
+  foot_poly = transformPolygon(foot_poly, hleg_T);
+  foot_poly = transformPolygon(foot_poly, torso_T);
+  drawPolygon(ctx, foot_poly);
+  
+  // Draw hip joint
+  ankle_joints[1] = transformPoint(ankle_joint_offset, foot_T);
+  ankle_joints[1] = transformPoint(ankle_joints[1], hleg_T);
+  ankle_joints[1] = transformPoint(ankle_joints[1], torso_T);
+  drawCircle(ctx, ankle_joints[1][0], ankle_joints[1][1], ankle_joint_r);
+
+
+
+  /*for (var i = 0; i < leg_offsets.length; i++) {
   	  // Legs
 	  leg_T = composeTransforms(
 	  	rotationAboutPoint(hip_angles[i], hip_joint_offset),
 	  	translateByOffset(leg_offsets[i])
 	  );
-	  console.log(leg_T); // even though leg_T is different in each loop, leg_poly ends up both being the same...
+	  //console.log(leg_T); // even though leg_T is different in each loop, leg_poly ends up both being the same...
 
 	  // Transform leg in hierarchical fashion
 
@@ -411,9 +490,9 @@ function drawPenguin(ctx)
 	  ankle_joints[i] = transformPoint(ankle_joints[i], leg_T);
 	  ankle_joints[i] = transformPoint(ankle_joints[i], torso_T);
 	  drawCircle(ctx, ankle_joints[i][0], ankle_joints[i][1], ankle_joint_r);
-  }
+  }*/
 
-  blah = leg_poly.slice(0);
+  /*blah = leg_poly.slice(0);
 
   leg_T = composeTransforms(
 	  	rotationAboutPoint(hip_angles[1], hip_joint_offset),
@@ -426,7 +505,7 @@ function drawPenguin(ctx)
 	  blah = transformPolygon(blah, leg_T);
 	  blah = transformPolygon(blah, torso_T);
 	  drawPolygon(ctx, blah);
-	  console.log(blah);
+	  console.log(blah);*/
 
   
   
