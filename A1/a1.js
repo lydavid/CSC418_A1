@@ -226,7 +226,6 @@ function drawPenguin(ctx)
   var arm_angle = parseFloat(document.getElementById("slider_arm_angle").value) * deg_to_rad;
   var head_angle = parseFloat(document.getElementById("slider_head_angle").value) * deg_to_rad;
   var mouth_gap = parseFloat(document.getElementById("slider_mouth_gap").value);
-  console.log(mouth_gap);
   var hip_angles = [
     parseFloat(document.getElementById("slider_hip_angle0").value) * deg_to_rad,
     parseFloat(document.getElementById("slider_hip_angle1").value)  * deg_to_rad
