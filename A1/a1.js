@@ -383,90 +383,95 @@ function drawPenguin(ctx)
   drawCircle(ctx, arm_joint[0], arm_joint[1], arm_joint_r);
 
 
+
   // Define transformation for the legs and feet
   var leg_offsets = [[-50, 200], [50, 200]]; // location of legs relative to body
-  var hip_joint_offset = [[0, -40], [10, -40]]; // location of hip joint relative to center of leg
+  var hip_joint_offset = [0, -40]; // location of hip joint relative to center of leg
 
   var foot_offset = [-40, 40]; // location of foot relative to leg
   var ankle_joint_offset = [40, 0]; // location o ankle joint relative to center of foot
 
-
-
-
-  // Legs
-  leg_T = composeTransforms(
-  	rotationAboutPoint(hip_angles[0], hip_joint_offset[0]),
+  // Left Leg
+  l_leg_T = composeTransforms(
+  	rotationAboutPoint(hip_angles[0], hip_joint_offset),
   	translateByOffset(leg_offsets[0])
   );
   //console.log(leg_T); // even though leg_T is different in each loop, leg_poly ends up both being the same...
 
   // Transform leg in hierarchical fashion
 
-  leg_poly = transformPolygon(leg_poly, leg_T);
-  leg_poly = transformPolygon(leg_poly, torso_T);
-  drawPolygon(ctx, leg_poly);
-  console.log(leg_poly);
+  l_leg_poly = leg_poly.slice(0);
+
+  l_leg_poly = transformPolygon(l_leg_poly, l_leg_T);
+  l_leg_poly = transformPolygon(l_leg_poly, torso_T);
+  drawPolygon(ctx, l_leg_poly);
+  console.log(l_leg_poly);
   
   // Draw hip joint
-  hip_joints[0] = transformPoint(hip_joint_offset[0], leg_T);
+  hip_joints[0] = transformPoint(hip_joint_offset, l_leg_T);
   hip_joints[0] = transformPoint(hip_joints[0], torso_T);
   drawCircle(ctx, hip_joints[0][0], hip_joints[0][1], hip_joint_r);
 
 
-  // Feets
-  var foot_T = composeTransforms(
+  // Leg Foot
+  var l_foot_T = composeTransforms(
   	rotationAboutPoint(ankle_angles[0], ankle_joint_offset),
   	translateByOffset(foot_offset)
   );
 
   // Transform leg in hierarchical fashion
-  foot_poly = transformPolygon(foot_poly, foot_T);
-  foot_poly = transformPolygon(foot_poly, leg_T);
-  foot_poly = transformPolygon(foot_poly, torso_T);
-  drawPolygon(ctx, foot_poly);
+  var l_foot_poly = foot_poly.slice(0);
+
+  l_foot_poly = transformPolygon(foot_poly, l_foot_T);
+  l_foot_poly = transformPolygon(foot_poly, l_leg_T);
+  l_foot_poly = transformPolygon(foot_poly, torso_T);
+  drawPolygon(ctx, l_foot_poly);
   
   // Draw hip joint
-  ankle_joints[0] = transformPoint(ankle_joint_offset, foot_T);
-  ankle_joints[0] = transformPoint(ankle_joints[0], leg_T);
+  ankle_joints[0] = transformPoint(ankle_joint_offset, l_foot_T);
+  ankle_joints[0] = transformPoint(ankle_joints[0], l_leg_T);
   ankle_joints[0] = transformPoint(ankle_joints[0], torso_T);
   drawCircle(ctx, ankle_joints[0][0], ankle_joints[0][1], ankle_joint_r);
 
 
-  // Legs
-  hleg_T = composeTransforms(
-  	rotationAboutPoint(hip_angles[1], hip_joint_offset[1]),
+  // Right Leg
+  r_leg_T = composeTransforms(
+  	rotationAboutPoint(hip_angles[1], hip_joint_offset),
   	translateByOffset(leg_offsets[1])
   );
   //console.log(leg_T); // even though leg_T is different in each loop, leg_poly ends up both being the same...
 
   // Transform leg in hierarchical fashion
+  var r_leg_poly = leg_poly.slice(0);
 
-  leg_poly = transformPolygon(leg_poly, hleg_T);
-  leg_poly = transformPolygon(leg_poly, torso_T);
-  drawPolygon(ctx, leg_poly);
-  console.log(leg_poly);
+  r_leg_poly = transformPolygon(r_leg_poly, r_leg_T);
+  r_leg_poly = transformPolygon(r_leg_poly, torso_T);
+  drawPolygon(ctx, r_leg_poly);
+  console.log(r_leg_poly);
   
   // Draw hip joint
-  hip_joints[1] = transformPoint(hip_joint_offset[1], hleg_T);
+  hip_joints[1] = transformPoint(hip_joint_offset, r_leg_T);
   hip_joints[1] = transformPoint(hip_joints[1], torso_T);
   drawCircle(ctx, hip_joints[1][0], hip_joints[1][1], hip_joint_r);
 
 
-  // Feets
-  var foot_T = composeTransforms(
+  // Right Foot
+  var r_foot_T = composeTransforms(
   	rotationAboutPoint(ankle_angles[1], ankle_joint_offset),
   	translateByOffset(foot_offset)
   );
 
   // Transform leg in hierarchical fashion
-  foot_poly = transformPolygon(foot_poly, foot_T);
-  foot_poly = transformPolygon(foot_poly, hleg_T);
-  foot_poly = transformPolygon(foot_poly, torso_T);
-  drawPolygon(ctx, foot_poly);
+  var r_foot_poly = foot_poly.slice(0);
+
+  r_foot_poly = transformPolygon(r_foot_poly, r_foot_T);
+  r_foot_poly = transformPolygon(r_foot_poly, r_leg_T);
+  r_foot_poly = transformPolygon(r_foot_poly, torso_T);
+  drawPolygon(ctx, r_foot_poly);
   
   // Draw hip joint
-  ankle_joints[1] = transformPoint(ankle_joint_offset, foot_T);
-  ankle_joints[1] = transformPoint(ankle_joints[1], hleg_T);
+  ankle_joints[1] = transformPoint(ankle_joint_offset, r_foot_T);
+  ankle_joints[1] = transformPoint(ankle_joints[1], r_leg_T);
   ankle_joints[1] = transformPoint(ankle_joints[1], torso_T);
   drawCircle(ctx, ankle_joints[1][0], ankle_joints[1][1], ankle_joint_r);
 
