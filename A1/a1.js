@@ -226,6 +226,7 @@ function drawPenguin(ctx)
   var arm_angle = parseFloat(document.getElementById("slider_arm_angle").value) * deg_to_rad;
   var head_angle = parseFloat(document.getElementById("slider_head_angle").value) * deg_to_rad;
   var mouth_gap = parseFloat(document.getElementById("slider_mouth_gap").value);
+  console.log(mouth_gap);
   var hip_angles = [
     parseFloat(document.getElementById("slider_hip_angle0").value) * deg_to_rad,
     parseFloat(document.getElementById("slider_hip_angle1").value)  * deg_to_rad
@@ -310,9 +311,6 @@ function drawPenguin(ctx)
 
   /* Draw the rest of the penguin below. */
 
-  // note that every time the slider is moved, this entire code section is executed
-  // so hierarchical structure is just making sure they are relative to the right things
-
   // Eye
   var eye_offset = [-15, -10]; // location of eye relative to head
   var eye_T = composeTransforms(
@@ -339,11 +337,34 @@ function drawPenguin(ctx)
 
 
   // Mouth
+  // Upper
+  var upper_beak_offset = [-90, 0];
+
+  var upper_beak_T = composeTransforms(
+  	translateByOffset(upper_beak_offset),
+  	translateByOffset([0, mouth_gap])
+  );
+
+  upper_beak_poly = transformPolygon(upper_beak_poly, upper_beak_T);
+  upper_beak_poly = transformPolygon(upper_beak_poly, head_T);
+  upper_beak_poly = transformPolygon(upper_beak_poly, torso_T);
+  drawPolygon(ctx, upper_beak_poly);
+
+  // Lower
+  var lower_beak_offset = [-90, 30];
+
+  var lower_beak_T = composeTransforms(
+  	translateByOffset(lower_beak_offset),
+  	translateByOffset([0, -mouth_gap])
+  );
+
+  lower_beak_poly = transformPolygon(lower_beak_poly, lower_beak_T);
+  lower_beak_poly = transformPolygon(lower_beak_poly, head_T);
+  lower_beak_poly = transformPolygon(lower_beak_poly, torso_T);
+  drawPolygon(ctx, lower_beak_poly);
 
 
-
-
-  // Define transformation for the arm
+  // Arm
   var arm_offset = [0, 0]; // location of arm relative to body
   var arm_joint_offset = [0, -60]; // location of arm joint relative to center of arm
   var arm_T = composeTransforms(
@@ -360,7 +381,6 @@ function drawPenguin(ctx)
   arm_joint = transformPoint(arm_joint_offset, arm_T);
   arm_joint = transformPoint(arm_joint, torso_T);
   drawCircle(ctx, arm_joint[0], arm_joint[1], arm_joint_r);
-
 
 
   // Define transformation for the legs and feet
