@@ -317,18 +317,20 @@ function drawPenguin(ctx)
   	translateByOffset(eye_offset)
   );
 
+  // transformation for eye relative to head and torso
   eye = transformPoint(eye_offset, eye_T);
   eye = transformPoint(eye, head_T);
   eye = transformPoint(eye, torso_T);
   drawCircle(ctx, eye[0], eye[1], eye_r);
 
   /* Iris */
-  var iris_offset = [-15, -10];
+  var iris_offset = [-15, -10]; // location or iris relative to head
   var iris_T = composeTransforms(
   	rotationAboutPoint(head_angle, iris_offset),
   	translateByOffset(iris_offset)
   );
 
+  // transformation for iris relative to head and torso
   iris = transformPoint(iris_offset, eye_T);
   iris = transformPoint(iris, head_T);
   iris = transformPoint(iris, torso_T);
@@ -337,26 +339,28 @@ function drawPenguin(ctx)
 
   /* Mouth */
   /* --Upper */
-  var upper_beak_offset = [-90, 0];
+  var upper_beak_offset = [-90, 0]; // location of upper beak relative to head
 
   var upper_beak_T = composeTransforms(
   	translateByOffset(upper_beak_offset),
   	translateByOffset([0, mouth_gap])
   );
 
+  // transformation for upper beak realtive to head and torso
   upper_beak_poly = transformPolygon(upper_beak_poly, upper_beak_T);
   upper_beak_poly = transformPolygon(upper_beak_poly, head_T);
   upper_beak_poly = transformPolygon(upper_beak_poly, torso_T);
   drawPolygon(ctx, upper_beak_poly);
 
   /* --Lower */
-  var lower_beak_offset = [-90, 30];
+  var lower_beak_offset = [-90, 30]; // location of lower beak relative to head
 
   var lower_beak_T = composeTransforms(
   	translateByOffset(lower_beak_offset),
   	translateByOffset([0, -mouth_gap])
   );
 
+  // transformation for lower beak realtive to head and torso
   lower_beak_poly = transformPolygon(lower_beak_poly, lower_beak_T);
   lower_beak_poly = transformPolygon(lower_beak_poly, head_T);
   lower_beak_poly = transformPolygon(lower_beak_poly, torso_T);
@@ -372,6 +376,7 @@ function drawPenguin(ctx)
   	translateByOffset(arm_offset)
   );
 
+  // transformation of arm relative to torso
   arm_poly = transformPolygon(arm_poly, arm_T);
   arm_poly = transformPolygon(arm_poly, torso_T);
   drawPolygon(ctx, arm_poly);
@@ -396,8 +401,9 @@ function drawPenguin(ctx)
   	translateByOffset(leg_offsets[0])
   );
 
-  l_leg_poly = leg_poly.slice(0);
+  l_leg_poly = leg_poly.slice(0); // shallow copy
 
+  // transformation of left leg relative to torso
   l_leg_poly = transformPolygon(l_leg_poly, l_leg_T);
   l_leg_poly = transformPolygon(l_leg_poly, torso_T);
   drawPolygon(ctx, l_leg_poly);
@@ -414,8 +420,9 @@ function drawPenguin(ctx)
   	translateByOffset(foot_offset)
   );
 
-  var l_foot_poly = foot_poly.slice(0);
+  var l_foot_poly = foot_poly.slice(0); // shallow copy
 
+  // transformation of left foot relative to left foot and torso
   l_foot_poly = transformPolygon(l_foot_poly, l_foot_T);
   l_foot_poly = transformPolygon(l_foot_poly, l_leg_T);
   l_foot_poly = transformPolygon(l_foot_poly, torso_T);
@@ -434,8 +441,9 @@ function drawPenguin(ctx)
   	translateByOffset(leg_offsets[1])
   );
 
-  var r_leg_poly = leg_poly.slice(0);
+  var r_leg_poly = leg_poly.slice(0); // shallow copy
 
+  // transformation of right leg relative to torso
   r_leg_poly = transformPolygon(r_leg_poly, r_leg_T);
   r_leg_poly = transformPolygon(r_leg_poly, torso_T);
   drawPolygon(ctx, r_leg_poly);
@@ -452,8 +460,9 @@ function drawPenguin(ctx)
   	translateByOffset(foot_offset)
   );
 
-  var r_foot_poly = foot_poly.slice(0);
+  var r_foot_poly = foot_poly.slice(0); // shallow copy
 
+  // transformation of right foot relative to right foot and torso
   r_foot_poly = transformPolygon(r_foot_poly, r_foot_T);
   r_foot_poly = transformPolygon(r_foot_poly, r_leg_T);
   r_foot_poly = transformPolygon(r_foot_poly, torso_T);
